@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { PageShell } from "../components/PageShell";
+import { HeartHandshake, Shield, Sparkles, Target } from "lucide-react";
+import { PageShell } from "@/components/PageShell";
+import { FeatureCard, GlassCard } from "@/components/finwise/Card";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -15,23 +17,34 @@ function About() {
   return (
     <PageShell
       eyebrow="Company"
-      title="About FinWise AI"
-      subtitle="We combine clean design, transparent math, and AI to help everyday people make confident financial decisions."
+      title={<>Financial clarity, <span className="gradient-text">reimagined</span> with AI.</>}
+      subtitle="We combine transparent math, calm design, and AI that explains itself — so everyday people can make confident financial decisions."
     >
-      <div className="grid gap-5 md:grid-cols-2">
-        <div className="rounded-xl border border-border bg-card p-6">
-          <h2 className="text-lg font-semibold">Our mission</h2>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Make personal finance tools accessible, understandable, and genuinely useful.
-          </p>
-        </div>
-        <div className="rounded-xl border border-border bg-card p-6">
-          <h2 className="text-lg font-semibold">How we work</h2>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Transparent formulas, private-by-default data, and AI that explains its reasoning.
-          </p>
-        </div>
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <FeatureCard icon={<Target className="h-6 w-6" />} title="Our mission" description="Make personal finance genuinely useful, understandable, and accessible to everyone." accent="blue" />
+        <FeatureCard icon={<Shield className="h-6 w-6" />} title="Private by default" description="No credit-pulls to explore. Your data stays yours, always encrypted." accent="purple" />
+        <FeatureCard icon={<Sparkles className="h-6 w-6" />} title="Transparent AI" description="Every recommendation includes the reasoning that produced it." accent="blue" />
+        <FeatureCard icon={<HeartHandshake className="h-6 w-6" />} title="Human-first" description="We measure success in decisions our users feel good about — not clicks." accent="purple" />
       </div>
+
+      <GlassCard className="mt-10 !p-10 md:!p-14">
+        <div className="max-w-3xl">
+          <h2 className="font-display text-2xl font-bold md:text-3xl">The FinWise principles</h2>
+          <ol className="mt-6 space-y-4 text-muted-foreground">
+            {[
+              "Clarity over cleverness — every number is explained.",
+              "Speed over surveillance — real-time answers without data harvesting.",
+              "Honest defaults — the recommended path is the one we'd take ourselves.",
+              "Design that respects attention — no dark patterns, ever.",
+            ].map((line, i) => (
+              <li key={i} className="flex gap-3">
+                <span className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg gradient-brand text-xs font-bold text-white">{i + 1}</span>
+                <span className="leading-relaxed">{line}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </GlassCard>
     </PageShell>
   );
 }
