@@ -9,8 +9,44 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as LoanEligibilityRouteImport } from './routes/loan-eligibility'
+import { Route as EmiCalculatorRouteImport } from './routes/emi-calculator'
+import { Route as CreditScoreRouteImport } from './routes/credit-score'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as AiAdvisorRouteImport } from './routes/ai-advisor'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 
+const LoanEligibilityRoute = LoanEligibilityRouteImport.update({
+  id: '/loan-eligibility',
+  path: '/loan-eligibility',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmiCalculatorRoute = EmiCalculatorRouteImport.update({
+  id: '/emi-calculator',
+  path: '/emi-calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CreditScoreRoute = CreditScoreRouteImport.update({
+  id: '/credit-score',
+  path: '/credit-score',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AiAdvisorRoute = AiAdvisorRouteImport.update({
+  id: '/ai-advisor',
+  path: '/ai-advisor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +55,116 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/ai-advisor': typeof AiAdvisorRoute
+  '/contact': typeof ContactRoute
+  '/credit-score': typeof CreditScoreRoute
+  '/emi-calculator': typeof EmiCalculatorRoute
+  '/loan-eligibility': typeof LoanEligibilityRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/ai-advisor': typeof AiAdvisorRoute
+  '/contact': typeof ContactRoute
+  '/credit-score': typeof CreditScoreRoute
+  '/emi-calculator': typeof EmiCalculatorRoute
+  '/loan-eligibility': typeof LoanEligibilityRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/ai-advisor': typeof AiAdvisorRoute
+  '/contact': typeof ContactRoute
+  '/credit-score': typeof CreditScoreRoute
+  '/emi-calculator': typeof EmiCalculatorRoute
+  '/loan-eligibility': typeof LoanEligibilityRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/ai-advisor'
+    | '/contact'
+    | '/credit-score'
+    | '/emi-calculator'
+    | '/loan-eligibility'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/about'
+    | '/ai-advisor'
+    | '/contact'
+    | '/credit-score'
+    | '/emi-calculator'
+    | '/loan-eligibility'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/ai-advisor'
+    | '/contact'
+    | '/credit-score'
+    | '/emi-calculator'
+    | '/loan-eligibility'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  AiAdvisorRoute: typeof AiAdvisorRoute
+  ContactRoute: typeof ContactRoute
+  CreditScoreRoute: typeof CreditScoreRoute
+  EmiCalculatorRoute: typeof EmiCalculatorRoute
+  LoanEligibilityRoute: typeof LoanEligibilityRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/loan-eligibility': {
+      id: '/loan-eligibility'
+      path: '/loan-eligibility'
+      fullPath: '/loan-eligibility'
+      preLoaderRoute: typeof LoanEligibilityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/emi-calculator': {
+      id: '/emi-calculator'
+      path: '/emi-calculator'
+      fullPath: '/emi-calculator'
+      preLoaderRoute: typeof EmiCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/credit-score': {
+      id: '/credit-score'
+      path: '/credit-score'
+      fullPath: '/credit-score'
+      preLoaderRoute: typeof CreditScoreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ai-advisor': {
+      id: '/ai-advisor'
+      path: '/ai-advisor'
+      fullPath: '/ai-advisor'
+      preLoaderRoute: typeof AiAdvisorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,6 +177,12 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  AiAdvisorRoute: AiAdvisorRoute,
+  ContactRoute: ContactRoute,
+  CreditScoreRoute: CreditScoreRoute,
+  EmiCalculatorRoute: EmiCalculatorRoute,
+  LoanEligibilityRoute: LoanEligibilityRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
