@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
+import { Toaster } from "sonner";
 
 function NotFoundComponent() {
   return (
@@ -93,6 +94,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap",
+      },
     ],
   }),
   shellComponent: RootShell,
@@ -120,13 +127,31 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="flex min-h-screen flex-col bg-background text-foreground">
+      <div className="relative flex min-h-screen flex-col overflow-x-hidden">
+        {/* Ambient background orbs */}
+        <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
+          <div className="absolute -left-40 top-[-10%] h-[520px] w-[520px] rounded-full bg-[oklch(0.68_0.19_260/0.35)] blur-3xl [animation:float_9s_ease-in-out_infinite]" />
+          <div className="absolute right-[-10%] top-1/3 h-[480px] w-[480px] rounded-full bg-[oklch(0.62_0.22_300/0.30)] blur-3xl [animation:float_11s_ease-in-out_infinite_1s]" />
+          <div className="absolute bottom-[-15%] left-1/3 h-[420px] w-[420px] rounded-full bg-[oklch(0.60_0.20_280/0.25)] blur-3xl [animation:float_13s_ease-in-out_infinite_2s]" />
+        </div>
+
         <Header />
         <main className="flex-1">
           {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
           <Outlet />
         </main>
         <Footer />
+        <Toaster
+          theme="dark"
+          position="top-right"
+          toastOptions={{
+            classNames: {
+              toast:
+                "!bg-[oklch(0.22_0.035_265/0.85)] !backdrop-blur-xl !border !border-[oklch(1_0_0/0.12)] !text-foreground !rounded-2xl !shadow-elegant",
+              description: "!text-muted-foreground",
+            },
+          }}
+        />
       </div>
     </QueryClientProvider>
   );
