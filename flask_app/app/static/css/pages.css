@@ -1,0 +1,11 @@
+/* Page-specific styles */
+.hero {
+  padding: 4rem 1.25rem;
+  text-align: center;
+}
+.hero h1 { font-size: clamp(2rem, 4vw, 3rem); }
+.hero p { color: var(--color-muted); font-size: 1.125rem; }
+
+.page { padding: 2rem 0; }
+.page h1 { font-size: 2rem; }
+.page p { color: var(--color-muted); }

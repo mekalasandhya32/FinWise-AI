@@ -1,0 +1,23 @@
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="{{ url_for('main.home') }}" class="brand">
+      <span class="brand-mark">Fin</span><span class="brand-name">Wise AI</span>
+    </a>
+
+    <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+    <nav class="site-nav" aria-label="Primary">
+      <ul>
+        <li><a class="{{ 'active' if active == 'home' }}"    href="{{ url_for('main.home') }}">Home</a></li>
+        <li><a class="{{ 'active' if active == 'loan' }}"    href="{{ url_for('loan.index') }}">Loan Eligibility</a></li>
+        <li><a class="{{ 'active' if active == 'credit' }}"  href="{{ url_for('credit.index') }}">Credit Score</a></li>
+        <li><a class="{{ 'active' if active == 'emi' }}"     href="{{ url_for('emi.index') }}">EMI Calculator</a></li>
+        <li><a class="{{ 'active' if active == 'advisor' }}" href="{{ url_for('advisor.index') }}">AI Advisor</a></li>
+        <li><a class="{{ 'active' if active == 'about' }}"   href="{{ url_for('main.about') }}">About</a></li>
+        <li><a class="{{ 'active' if active == 'contact' }}" href="{{ url_for('main.contact') }}">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
