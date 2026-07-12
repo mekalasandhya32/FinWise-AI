@@ -16,6 +16,7 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AiAdvisorRouteImport } from './routes/ai-advisor'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiChatRouteImport } from './routes/api/chat'
 
 const LoanEligibilityRoute = LoanEligibilityRouteImport.update({
   id: '/loan-eligibility',
@@ -52,6 +53,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -61,6 +67,7 @@ export interface FileRoutesByFullPath {
   '/credit-score': typeof CreditScoreRoute
   '/emi-calculator': typeof EmiCalculatorRoute
   '/loan-eligibility': typeof LoanEligibilityRoute
+  '/api/chat': typeof ApiChatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -70,6 +77,7 @@ export interface FileRoutesByTo {
   '/credit-score': typeof CreditScoreRoute
   '/emi-calculator': typeof EmiCalculatorRoute
   '/loan-eligibility': typeof LoanEligibilityRoute
+  '/api/chat': typeof ApiChatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -80,6 +88,7 @@ export interface FileRoutesById {
   '/credit-score': typeof CreditScoreRoute
   '/emi-calculator': typeof EmiCalculatorRoute
   '/loan-eligibility': typeof LoanEligibilityRoute
+  '/api/chat': typeof ApiChatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -91,6 +100,7 @@ export interface FileRouteTypes {
     | '/credit-score'
     | '/emi-calculator'
     | '/loan-eligibility'
+    | '/api/chat'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -100,6 +110,7 @@ export interface FileRouteTypes {
     | '/credit-score'
     | '/emi-calculator'
     | '/loan-eligibility'
+    | '/api/chat'
   id:
     | '__root__'
     | '/'
@@ -109,6 +120,7 @@ export interface FileRouteTypes {
     | '/credit-score'
     | '/emi-calculator'
     | '/loan-eligibility'
+    | '/api/chat'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -119,6 +131,7 @@ export interface RootRouteChildren {
   CreditScoreRoute: typeof CreditScoreRoute
   EmiCalculatorRoute: typeof EmiCalculatorRoute
   LoanEligibilityRoute: typeof LoanEligibilityRoute
+  ApiChatRoute: typeof ApiChatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -172,6 +185,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -183,6 +203,7 @@ const rootRouteChildren: RootRouteChildren = {
   CreditScoreRoute: CreditScoreRoute,
   EmiCalculatorRoute: EmiCalculatorRoute,
   LoanEligibilityRoute: LoanEligibilityRoute,
+  ApiChatRoute: ApiChatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
