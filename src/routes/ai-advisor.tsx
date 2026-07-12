@@ -1,26 +1,27 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useChat } from "@ai-sdk/react";
+import { DefaultChatTransport, type UIMessage } from "ai";
 import { toast } from "sonner";
-import { ArrowUp, BrainCircuit, Sparkles } from "lucide-react";
+import { ArrowUp, BrainCircuit, Sparkles, RefreshCw, Square } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { GlassCard } from "@/components/finwise/Card";
 import { Button, Spinner } from "@/components/finwise/Button";
+import { Markdown } from "@/components/finwise/Markdown";
 
 export const Route = createFileRoute("/ai-advisor")({
   head: () => ({
     meta: [
       { title: "AI Advisor — FinWise AI" },
-      { name: "description", content: "Chat with an AI-powered financial advisor for personalized guidance." },
+      {
+        name: "description",
+        content:
+          "Chat with FinWise AI — a real-time AI financial advisor for loans, credit, savings, and budgets.",
+      },
     ],
   }),
   component: AiAdvisor,
 });
-
-type Msg = { role: "user" | "ai"; text: string };
-
-const SEED: Msg[] = [
-  { role: "ai", text: "Hi 👋 I'm your FinWise AI advisor. Ask me anything about loans, credit, budgets, or investing." },
-];
 
 const SUGGESTIONS = [
   "How do I improve my credit score fast?",
@@ -29,65 +30,151 @@ const SUGGESTIONS = [
   "Explain APR vs APY simply",
 ];
 
-function AiAdvisor() {
-  const [messages, setMessages] = useState<Msg[]>(SEED);
-  const [draft, setDraft] = useState("");
-  const [thinking, setThinking] = useState(false);
+const WELCOME: UIMessage = {
+  id: "welcome",
+  role: "assistant",
+  parts: [
+    {
+      type: "text",
+      text:
+        "Hi 👋 I'm **FinWise AI**, your financial copilot.\n\nAsk me about **loans, credit scores, savings, budgets, or investing** — I'll explain clearly and give you a concrete plan.",
+    },
+  ],
+};
 
-  const send = (text: string) => {
-    if (!text.trim()) return;
-    setMessages((m) => [...m, { role: "user", text }]);
-    setDraft("");
-    setThinking(true);
-    setTimeout(() => {
-      setMessages((m) => [
-        ...m,
-        {
-          role: "ai",
-          text: "This is a UI preview of the AI advisor. Groq integration will land in the next step — every response will include transparent reasoning.",
-        },
-      ]);
-      setThinking(false);
-      toast("Response generated", { description: "Preview mode — Groq wires up soon" });
-    }, 1100);
+function extractText(message: UIMessage): string {
+  return message.parts
+    .map((p) => (p.type === "text" ? p.text : ""))
+    .join("");
+}
+
+function AiAdvisor() {
+  const [input, setInput] = useState("");
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const { messages, sendMessage, status, stop, error, regenerate, setMessages } = useChat({
+    messages: [WELCOME],
+    transport: new DefaultChatTransport({ api: "/api/chat" }),
+    onError: (err) => {
+      toast.error("Advisor unavailable", {
+        description: err.message || "Please try again in a moment.",
+      });
+    },
+  });
+
+  const isBusy = status === "submitted" || status === "streaming";
+
+  useEffect(() => {
+    scrollRef.current?.scrollTo({
+      top: scrollRef.current.scrollHeight,
+      behavior: "smooth",
+    });
+  }, [messages, status]);
+
+  useEffect(() => {
+    if (!isBusy) inputRef.current?.focus();
+  }, [isBusy]);
+
+  const submit = (text: string) => {
+    const value = text.trim();
+    if (!value || isBusy) return;
+    setInput("");
+    void sendMessage({ text: value });
+  };
+
+  const clearConversation = () => {
+    setMessages([WELCOME]);
+    toast("Conversation cleared");
   };
 
   return (
     <PageShell
       eyebrow="AI"
-      title={<>Your personal <span className="gradient-text">AI money copilot</span>.</>}
-      subtitle="A private, patient advisor that explains its reasoning — powered by Groq's lightning-fast inference (integration coming soon)."
+      title={
+        <>
+          Your personal <span className="gradient-text">AI money copilot</span>.
+        </>
+      }
+      subtitle="A private, patient advisor that explains its reasoning — powered by Lovable AI streaming inference."
     >
       <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
-        <GlassCard className="flex h-[560px] flex-col !p-0">
-          {/* messages */}
-          <div className="flex-1 space-y-4 overflow-y-auto p-6">
-            {messages.map((m, i) => (
-              <div key={i} className={m.role === "user" ? "flex justify-end" : "flex gap-3"}>
-                {m.role === "ai" && (
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl gradient-brand shadow-glow">
-                    <BrainCircuit className="h-4 w-4 text-white" />
-                  </span>
-                )}
-                <div
-                  className={
-                    m.role === "user"
-                      ? "max-w-[80%] rounded-2xl rounded-tr-sm gradient-brand px-4 py-2.5 text-sm text-white shadow-[0_8px_24px_-8px_oklch(0.68_0.19_260/0.7)] animate-[fade-up_0.3s_ease-out]"
-                      : "max-w-[80%] rounded-2xl rounded-tl-sm glass px-4 py-2.5 text-sm leading-relaxed animate-[fade-up_0.3s_ease-out]"
-                  }
-                >
-                  {m.text}
-                </div>
+        <GlassCard className="flex h-[600px] flex-col !p-0">
+          {/* header */}
+          <div className="flex items-center justify-between border-b border-[oklch(1_0_0/0.08)] px-5 py-3">
+            <div className="flex items-center gap-2">
+              <span className="flex h-8 w-8 items-center justify-center rounded-xl gradient-brand shadow-glow">
+                <BrainCircuit className="h-4 w-4 text-white" />
+              </span>
+              <div>
+                <p className="text-sm font-semibold">FinWise Advisor</p>
+                <p className="text-[10px] uppercase tracking-widest text-muted-foreground">
+                  {isBusy ? "Thinking…" : "Online"}
+                </p>
               </div>
-            ))}
-            {thinking && (
+            </div>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={clearConversation}
+              leftIcon={<RefreshCw className="h-3.5 w-3.5" />}
+            >
+              New chat
+            </Button>
+          </div>
+
+          {/* messages */}
+          <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto p-5">
+            {messages.map((m) => {
+              const text = extractText(m);
+              const isUser = m.role === "user";
+              return (
+                <div key={m.id} className={isUser ? "flex justify-end" : "flex gap-3"}>
+                  {!isUser && (
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl gradient-brand shadow-glow">
+                      <BrainCircuit className="h-4 w-4 text-white" />
+                    </span>
+                  )}
+                  <div
+                    className={
+                      isUser
+                        ? "max-w-[80%] rounded-2xl rounded-tr-sm gradient-brand px-4 py-2.5 text-sm text-white shadow-[0_8px_24px_-8px_oklch(0.68_0.19_260/0.7)] animate-[fade-up_0.3s_ease-out]"
+                        : "max-w-[85%] rounded-2xl rounded-tl-sm glass px-4 py-3 animate-[fade-up_0.3s_ease-out]"
+                    }
+                  >
+                    {isUser ? (
+                      <p className="whitespace-pre-wrap">{text}</p>
+                    ) : text ? (
+                      <Markdown>{text}</Markdown>
+                    ) : (
+                      <TypingDots />
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+
+            {status === "submitted" && (
               <div className="flex gap-3">
                 <span className="flex h-8 w-8 items-center justify-center rounded-xl gradient-brand">
                   <BrainCircuit className="h-4 w-4 text-white" />
                 </span>
                 <div className="flex items-center gap-2 rounded-2xl glass px-4 py-3 text-xs text-muted-foreground">
-                  <Spinner /> Thinking...
+                  <Spinner /> Thinking…
                 </div>
+              </div>
+            )}
+
+            {error && (
+              <div className="rounded-xl border border-destructive/40 bg-destructive/10 px-4 py-3 text-xs text-destructive">
+                <p className="font-semibold">Advisor error</p>
+                <p className="opacity-80">{error.message}</p>
+                <button
+                  onClick={() => regenerate()}
+                  className="mt-2 text-xs font-semibold underline underline-offset-2"
+                >
+                  Retry
+                </button>
               </div>
             )}
           </div>
@@ -97,30 +184,56 @@ function AiAdvisor() {
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                send(draft);
+                submit(input);
               }}
               className="flex items-center gap-2 glass-strong rounded-2xl p-1.5"
             >
               <input
-                value={draft}
-                onChange={(e) => setDraft(e.target.value)}
-                placeholder="Ask about loans, credit, budgets, investing..."
-                className="flex-1 bg-transparent px-3 text-sm outline-none placeholder:text-muted-foreground/60"
+                ref={inputRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Ask about loans, credit, budgets, investing…"
+                className="flex-1 bg-transparent px-3 py-2 text-sm outline-none placeholder:text-muted-foreground/60"
+                autoFocus
+                disabled={false}
               />
-              <Button size="sm" type="submit" leftIcon={<ArrowUp className="h-4 w-4" />}>
-                Send
-              </Button>
+              {isBusy ? (
+                <Button
+                  size="sm"
+                  type="button"
+                  variant="secondary"
+                  onClick={() => stop()}
+                  leftIcon={<Square className="h-3.5 w-3.5" />}
+                >
+                  Stop
+                </Button>
+              ) : (
+                <Button
+                  size="sm"
+                  type="submit"
+                  leftIcon={<ArrowUp className="h-4 w-4" />}
+                  disabled={!input.trim()}
+                >
+                  Send
+                </Button>
+              )}
             </form>
+            <p className="mt-2 px-2 text-[10px] text-muted-foreground/70">
+              Educational guidance only — not licensed financial advice.
+            </p>
           </div>
         </GlassCard>
 
         <div className="space-y-3">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">Try a prompt</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">
+            Try a prompt
+          </p>
           {SUGGESTIONS.map((s) => (
             <button
               key={s}
-              onClick={() => send(s)}
-              className="glass hover-lift group w-full rounded-xl p-4 text-left text-sm transition-all"
+              onClick={() => submit(s)}
+              disabled={isBusy}
+              className="glass hover-lift group w-full rounded-xl p-4 text-left text-sm transition-all disabled:opacity-50"
             >
               <div className="flex items-start gap-3">
                 <Sparkles className="h-4 w-4 shrink-0 text-primary transition-transform group-hover:rotate-12" />
@@ -128,8 +241,29 @@ function AiAdvisor() {
               </div>
             </button>
           ))}
+
+          <div className="glass rounded-xl p-4 text-xs text-muted-foreground">
+            <p className="mb-1 font-semibold text-foreground">What I'm good at</p>
+            <ul className="list-disc space-y-1 pl-4">
+              <li>Loan eligibility & EMI planning</li>
+              <li>Credit score improvement</li>
+              <li>Savings & emergency fund strategy</li>
+              <li>Monthly budget breakdowns</li>
+              <li>Explaining financial jargon</li>
+            </ul>
+          </div>
         </div>
       </div>
     </PageShell>
+  );
+}
+
+function TypingDots() {
+  return (
+    <div className="flex items-center gap-1.5 py-1">
+      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary [animation-delay:-0.3s]" />
+      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary [animation-delay:-0.15s]" />
+      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
+    </div>
   );
 }
