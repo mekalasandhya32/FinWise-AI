@@ -1,11 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Calculator, DollarSign, Percent, Sparkles } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { Calculator, DollarSign, Percent, Save } from "lucide-react";
 import { toast } from "sonner";
 import { PageShell } from "@/components/PageShell";
 import { GlassCard, ResultCard } from "@/components/finwise/Card";
 import { Input } from "@/components/finwise/Field";
 import { Button } from "@/components/finwise/Button";
+import { saveEmiCalculation } from "@/lib/sheets.functions";
 
 export const Route = createFileRoute("/emi-calculator")({
   head: () => ({
@@ -21,6 +23,10 @@ function EmiCalculator() {
   const [amount, setAmount] = useState(25000);
   const [rate, setRate] = useState(9.5);
   const [months, setMonths] = useState(36);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [saving, setSaving] = useState(false);
+  const save = useServerFn(saveEmiCalculation);
 
   const { emi, total, interest } = useMemo(() => {
     const r = rate / 12 / 100;
@@ -69,12 +75,34 @@ function EmiCalculator() {
               />
             </div>
 
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Input label="Your name" placeholder="Ada Lovelace" value={name} onChange={(e) => setName(e.target.value)} />
+              <Input label="Email" type="email" placeholder="you@email.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+            </div>
+
             <Button
               size="lg"
-              leftIcon={<Sparkles className="h-4 w-4" />}
-              onClick={() => toast.success("EMI recalculated", { description: `${fmt(emi)} / month` })}
+              loading={saving}
+              leftIcon={<Save className="h-4 w-4" />}
+              onClick={async () => {
+                setSaving(true);
+                try {
+                  await save({
+                    data: {
+                      payload: { loanAmount: amount, rate, months, emi, totalInterest: interest, totalPayable: total },
+                      user: { name, email },
+                      status: "calculated",
+                    },
+                  });
+                  toast.success("EMI saved", { description: `${fmt(emi)} / month logged to Sheets.` });
+                } catch (err) {
+                  toast.error("Save failed", { description: (err as Error).message });
+                } finally {
+                  setSaving(false);
+                }
+              }}
             >
-              Get AI recommendation
+              Save to Google Sheets
             </Button>
           </div>
         </GlassCard>

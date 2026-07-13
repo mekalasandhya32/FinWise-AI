@@ -1,7 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { BadgeCheck, TrendingUp, ShieldCheck, Activity } from "lucide-react";
+import { useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { toast } from "sonner";
+import { BadgeCheck, TrendingUp, ShieldCheck, Activity, Save } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { GlassCard, StatCard } from "@/components/finwise/Card";
+import { Input } from "@/components/finwise/Field";
+import { Button } from "@/components/finwise/Button";
+import { saveCreditAnalysis } from "@/lib/sheets.functions";
 
 export const Route = createFileRoute("/credit-score")({
   head: () => ({
@@ -18,6 +24,36 @@ function CreditScore() {
   const min = 300;
   const max = 900;
   const pct = ((score - min) / (max - min)) * 100;
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [saving, setSaving] = useState(false);
+  const save = useServerFn(saveCreditAnalysis);
+
+  const persist = async () => {
+    setSaving(true);
+    try {
+      await save({
+        data: {
+          payload: {
+            score,
+            paymentHistory: "98%",
+            utilization: "22%",
+            accountAge: "6.4 yrs",
+            recentInquiries: 2,
+            risk: "Low",
+          },
+          user: { name, email },
+          status: "analyzed",
+        },
+      });
+      toast.success("Analysis saved to Google Sheets");
+    } catch (err) {
+      toast.error("Save failed", { description: (err as Error).message });
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <PageShell
@@ -74,6 +110,17 @@ function CreditScore() {
             <p className="mt-3 text-sm text-muted-foreground">
               Lower utilization on your primary card below 15% to unlock an estimated +18 points in ~60 days.
             </p>
+          </GlassCard>
+
+          <GlassCard className="!p-5">
+            <p className="mb-3 font-display font-semibold">Save this analysis</p>
+            <div className="grid gap-3">
+              <Input label="Your name" placeholder="Ada Lovelace" value={name} onChange={(e) => setName(e.target.value)} />
+              <Input label="Email" type="email" placeholder="you@email.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+              <Button onClick={persist} loading={saving} leftIcon={<Save className="h-4 w-4" />}>
+                Save to Google Sheets
+              </Button>
+            </div>
           </GlassCard>
         </div>
       </div>
