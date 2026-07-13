@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { Calculator, DollarSign, Percent, Save, Sparkles } from "lucide-react";
+import { Calculator, DollarSign, Percent, Save } from "lucide-react";
 import { toast } from "sonner";
 import { PageShell } from "@/components/PageShell";
 import { GlassCard, ResultCard } from "@/components/finwise/Card";
