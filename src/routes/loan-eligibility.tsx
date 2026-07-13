@@ -58,24 +58,26 @@ function LoanEligibility() {
       <div className="grid gap-6 lg:grid-cols-[1.1fr_1fr]">
         <GlassCard className="!p-7">
           <form onSubmit={onSubmit} className="grid gap-5 sm:grid-cols-2">
-            <Select label="Loan type">
+            <Input label="Your name" name="name" placeholder="Ada Lovelace" />
+            <Input label="Email" name="email" type="email" placeholder="you@email.com" />
+            <Select label="Loan type" name="loanType">
               <option>Personal</option>
               <option>Home</option>
               <option>Auto</option>
             </Select>
-            <Input label="Loan amount" type="number" placeholder="25,000" leftIcon={<DollarSign className="h-4 w-4" />} />
-            <Input label="Monthly income" type="number" placeholder="6,500" leftIcon={<DollarSign className="h-4 w-4" />} />
-            <Input label="Existing EMI" type="number" placeholder="450" leftIcon={<DollarSign className="h-4 w-4" />} />
-            <Select label="Employment">
+            <Input label="Loan amount" name="loanAmount" type="number" placeholder="25000" leftIcon={<DollarSign className="h-4 w-4" />} />
+            <Input label="Monthly income" name="monthlyIncome" type="number" placeholder="6500" leftIcon={<DollarSign className="h-4 w-4" />} />
+            <Input label="Existing EMI" name="existingEmi" type="number" placeholder="450" leftIcon={<DollarSign className="h-4 w-4" />} />
+            <Select label="Employment" name="employment">
               <option>Salaried</option>
               <option>Self-employed</option>
               <option>Freelancer</option>
             </Select>
-            <Input label="Years of employment" type="number" placeholder="3" leftIcon={<Briefcase className="h-4 w-4" />} />
+            <Input label="Years of employment" name="yearsEmployed" type="number" placeholder="3" leftIcon={<Briefcase className="h-4 w-4" />} />
 
             <div className="sm:col-span-2">
               <Button className="w-full" size="lg" loading={loading} leftIcon={<Sparkles className="h-4 w-4" />}>
-                Check eligibility
+                Check eligibility & save
               </Button>
             </div>
           </form>
