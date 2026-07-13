@@ -1,11 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Briefcase, DollarSign, Percent, Sparkles } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { GlassCard, ResultCard } from "@/components/finwise/Card";
 import { Input, Select } from "@/components/finwise/Field";
 import { Button } from "@/components/finwise/Button";
+import { saveLoanApplication } from "@/lib/sheets.functions";
 
 export const Route = createFileRoute("/loan-eligibility")({
   head: () => ({
@@ -20,15 +22,31 @@ export const Route = createFileRoute("/loan-eligibility")({
 function LoanEligibility() {
   const [loading, setLoading] = useState(false);
   const [showResult, setShowResult] = useState(false);
+  const save = useServerFn(saveLoanApplication);
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const f = new FormData(e.currentTarget);
+    const payload = {
+      loanType: String(f.get("loanType") || "Personal"),
+      loanAmount: Number(f.get("loanAmount") || 0),
+      monthlyIncome: Number(f.get("monthlyIncome") || 0),
+      existingEmi: Number(f.get("existingEmi") || 0),
+      employment: String(f.get("employment") || "Salaried"),
+      yearsEmployed: Number(f.get("yearsEmployed") || 0),
+    };
+    const user = { name: String(f.get("name") || ""), email: String(f.get("email") || "") };
+
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      await save({ data: { payload, user, status: "submitted" } });
       setShowResult(true);
-      toast.success("Eligibility check complete", { description: "Sample result — logic wires up next." });
-    }, 900);
+      toast.success("Application saved", { description: "Logged to Google Sheets." });
+    } catch (err) {
+      toast.error("Could not save application", { description: (err as Error).message });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
