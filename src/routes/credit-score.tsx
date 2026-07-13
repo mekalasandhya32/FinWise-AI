@@ -25,6 +25,36 @@ function CreditScore() {
   const max = 900;
   const pct = ((score - min) / (max - min)) * 100;
 
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [saving, setSaving] = useState(false);
+  const save = useServerFn(saveCreditAnalysis);
+
+  const persist = async () => {
+    setSaving(true);
+    try {
+      await save({
+        data: {
+          payload: {
+            score,
+            paymentHistory: "98%",
+            utilization: "22%",
+            accountAge: "6.4 yrs",
+            recentInquiries: 2,
+            risk: "Low",
+          },
+          user: { name, email },
+          status: "analyzed",
+        },
+      });
+      toast.success("Analysis saved to Google Sheets");
+    } catch (err) {
+      toast.error("Save failed", { description: (err as Error).message });
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
     <PageShell
       eyebrow="Insights"
