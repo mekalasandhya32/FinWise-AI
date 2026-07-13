@@ -1,11 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Calculator, DollarSign, Percent, Sparkles } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { Calculator, DollarSign, Percent, Save, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { PageShell } from "@/components/PageShell";
 import { GlassCard, ResultCard } from "@/components/finwise/Card";
 import { Input } from "@/components/finwise/Field";
 import { Button } from "@/components/finwise/Button";
+import { saveEmiCalculation } from "@/lib/sheets.functions";
 
 export const Route = createFileRoute("/emi-calculator")({
   head: () => ({
