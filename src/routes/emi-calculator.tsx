@@ -125,8 +125,8 @@ function EmiCalculator() {
               <span className="flex items-center gap-2"><Percent className="h-3.5 w-3.5" /> Live</span>
             </div>
             <div className="flex h-3 overflow-hidden rounded-full bg-[oklch(1_0_0/0.06)]">
-              <div className="gradient-brand" style={{ width: `${(amount / total) * 100}%` }} />
-              <div className="bg-[oklch(0.62_0.22_300/0.5)]" style={{ width: `${(interest / total) * 100}%` }} />
+              <div className="gradient-brand" style={{ width: `${((amount / total) * 100).toFixed(2)}%` }} />
+              <div className="bg-[oklch(0.62_0.22_300/0.5)]" style={{ width: `${((interest / total) * 100).toFixed(2)}%` }} />
             </div>
             <div className="mt-3 flex justify-between text-xs text-muted-foreground">
               <span>Principal {Math.round((amount / total) * 100)}%</span>
