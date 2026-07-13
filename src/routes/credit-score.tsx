@@ -111,6 +111,17 @@ function CreditScore() {
               Lower utilization on your primary card below 15% to unlock an estimated +18 points in ~60 days.
             </p>
           </GlassCard>
+
+          <GlassCard className="!p-5">
+            <p className="mb-3 font-display font-semibold">Save this analysis</p>
+            <div className="grid gap-3">
+              <Input label="Your name" placeholder="Ada Lovelace" value={name} onChange={(e) => setName(e.target.value)} />
+              <Input label="Email" type="email" placeholder="you@email.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+              <Button onClick={persist} loading={saving} leftIcon={<Save className="h-4 w-4" />}>
+                Save to Google Sheets
+              </Button>
+            </div>
+          </GlassCard>
         </div>
       </div>
     </PageShell>
