@@ -75,12 +75,34 @@ function EmiCalculator() {
               />
             </div>
 
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Input label="Your name" placeholder="Ada Lovelace" value={name} onChange={(e) => setName(e.target.value)} />
+              <Input label="Email" type="email" placeholder="you@email.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+            </div>
+
             <Button
               size="lg"
-              leftIcon={<Sparkles className="h-4 w-4" />}
-              onClick={() => toast.success("EMI recalculated", { description: `${fmt(emi)} / month` })}
+              loading={saving}
+              leftIcon={<Save className="h-4 w-4" />}
+              onClick={async () => {
+                setSaving(true);
+                try {
+                  await save({
+                    data: {
+                      payload: { loanAmount: amount, rate, months, emi, totalInterest: interest, totalPayable: total },
+                      user: { name, email },
+                      status: "calculated",
+                    },
+                  });
+                  toast.success("EMI saved", { description: `${fmt(emi)} / month logged to Sheets.` });
+                } catch (err) {
+                  toast.error("Save failed", { description: (err as Error).message });
+                } finally {
+                  setSaving(false);
+                }
+              }}
             >
-              Get AI recommendation
+              Save to Google Sheets
             </Button>
           </div>
         </GlassCard>
