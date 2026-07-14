@@ -1,8 +1,99 @@
 {% extends 'base.html' %}
 {% block title %}Loan Eligibility — FinWise AI{% endblock %}
 {% block content %}
-<section class="container page">
-  <h1>Loan Eligibility</h1>
-  <p>Check your eligibility for personal, home, and auto loans. (Coming soon.)</p>
+<section class="container page loan-page">
+  <header class="page-header">
+    <span class="eyebrow">Loan Eligibility Checker</span>
+    <h1>Find out if you <span class="gradient-text">qualify</span> — in seconds.</h1>
+    <p class="lede">Rule-based engine analyzes income, expenses, existing debt, and profile to compute your DTI, disposable income, EMI, eligibility score, and risk level.</p>
+  </header>
+
+  <div class="loan-layout">
+    <form id="loan-form" class="card form-card" novalidate>
+      <div class="grid-2">
+        <label class="field">
+          <span>Full name</span>
+          <input name="name" type="text" required minlength="2" placeholder="Ada Lovelace" />
+          <em class="error" data-error-for="name"></em>
+        </label>
+        <label class="field">
+          <span>Age</span>
+          <input name="age" type="number" min="18" max="75" required placeholder="28" />
+          <em class="error" data-error-for="age"></em>
+        </label>
+
+        <label class="field">
+          <span>Monthly income</span>
+          <input name="income" type="number" min="0" step="1" required placeholder="6500" />
+          <em class="error" data-error-for="income"></em>
+        </label>
+        <label class="field">
+          <span>Monthly expenses</span>
+          <input name="expenses" type="number" min="0" step="1" required placeholder="2200" />
+          <em class="error" data-error-for="expenses"></em>
+        </label>
+
+        <label class="field">
+          <span>Existing EMI</span>
+          <input name="existing_emi" type="number" min="0" step="1" required placeholder="450" />
+          <em class="error" data-error-for="existing_emi"></em>
+        </label>
+        <label class="field">
+          <span>Employment type</span>
+          <select name="employment_type" required>
+            <option value="Salaried">Salaried</option>
+            <option value="Self-employed">Self-employed</option>
+            <option value="Freelancer">Freelancer</option>
+            <option value="Business">Business</option>
+            <option value="Student">Student</option>
+          </select>
+          <em class="error" data-error-for="employment_type"></em>
+        </label>
+
+        <label class="field">
+          <span>Work experience (years)</span>
+          <input name="work_experience" type="number" min="0" step="0.5" required placeholder="4" />
+          <em class="error" data-error-for="work_experience"></em>
+        </label>
+        <label class="field">
+          <span>Loan amount</span>
+          <input name="loan_amount" type="number" min="1" step="1" required placeholder="25000" />
+          <em class="error" data-error-for="loan_amount"></em>
+        </label>
+
+        <label class="field">
+          <span>Loan tenure (months)</span>
+          <input name="loan_tenure" type="number" min="3" max="360" required placeholder="36" />
+          <em class="error" data-error-for="loan_tenure"></em>
+        </label>
+        <label class="field">
+          <span>Loan purpose</span>
+          <select name="loan_purpose" required>
+            <option value="Personal">Personal</option>
+            <option value="Home">Home</option>
+            <option value="Auto">Auto</option>
+            <option value="Education">Education</option>
+            <option value="Business">Business</option>
+            <option value="Medical">Medical</option>
+          </select>
+          <em class="error" data-error-for="loan_purpose"></em>
+        </label>
+      </div>
+
+      <button class="btn btn-primary btn-lg" type="submit">
+        <span class="btn-label">Check my eligibility</span>
+        <span class="spinner" hidden></span>
+      </button>
+    </form>
+
+    <aside id="loan-result" class="result-panel" aria-live="polite">
+      <div class="card empty-state">
+        <h3>Your eligibility report will appear here</h3>
+        <p>Fill in the form. We compute DTI, disposable income, estimated EMI, and a risk-adjusted score using a transparent rule engine.</p>
+      </div>
+    </aside>
+  </div>
 </section>
+
+<script src="{{ url_for('static', filename='js/loan.js') }}" defer></script>
 {% endblock %}
