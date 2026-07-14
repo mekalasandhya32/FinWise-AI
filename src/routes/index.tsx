@@ -23,7 +23,7 @@ export const Route = createFileRoute("/")({
       {
         property: "og:description",
         content:
-          "Loan checks, credit insights, EMI planning, and an AI advisor — one calm interface for smarter money decisions.",
+          "AI-powered loan eligibility, credit insights, EMI planning, and a personal financial advisor — unified in one beautifully simple workspace.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
