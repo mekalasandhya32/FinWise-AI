@@ -21,7 +21,7 @@ A professional AI-powered financial web application built with Flask.
 ## Project Structure
 
 ```
-flask_app/
+backend/
 ├── app/
 │   ├── __init__.py            # Application factory
 │   ├── config.py              # Configuration classes
@@ -70,7 +70,7 @@ flask_app/
 ## Getting Started
 
 ```bash
-cd flask_app
+cd backend
 python -m venv venv
 source venv/bin/activate        # Windows: venv\Scripts\activate
 pip install -r requirements.txt
