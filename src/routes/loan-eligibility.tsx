@@ -35,7 +35,7 @@ function LoanEligibility() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<LoanResult | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const save = useServerFn(saveLoanApplication);
+
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
