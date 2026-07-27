@@ -29,4 +29,4 @@ pytest ../tests/backend
 | Home renders | `/` | Playwright |
 | EMI math | `/emi-calculator` | Vitest |
 | AI streaming | `/api/chat` | Playwright |
-| Sheets webhook | `saveLoanApplication` | Vitest (mocked) |
+| Local storage | `saveLoanApplication` | Vitest (jsdom) |
