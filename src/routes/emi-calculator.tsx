@@ -87,14 +87,12 @@ function EmiCalculator() {
               onClick={async () => {
                 setSaving(true);
                 try {
-                  await save({
-                    data: {
-                      payload: { loanAmount: amount, rate, months, emi, totalInterest: interest, totalPayable: total },
-                      user: { name, email },
-                      status: "calculated",
-                    },
-                  });
-                  toast.success("EMI saved", { description: `${fmt(emi)} / month logged to Sheets.` });
+                  saveEmiCalculation(
+                    { loanAmount: amount, rate, months, emi, totalInterest: interest, totalPayable: total },
+                    { name, email },
+                    "calculated",
+                  );
+                  toast.success("EMI saved", { description: `${fmt(emi)} / month saved on this device.` });
                 } catch (err) {
                   toast.error("Save failed", { description: (err as Error).message });
                 } finally {
@@ -102,7 +100,8 @@ function EmiCalculator() {
                 }
               }}
             >
-              Save to Google Sheets
+              Save calculation
+
             </Button>
           </div>
         </GlassCard>
