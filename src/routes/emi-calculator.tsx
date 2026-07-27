@@ -1,13 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { useServerFn } from "@tanstack/react-start";
 import { Calculator, DollarSign, Percent, Save } from "lucide-react";
 import { toast } from "sonner";
 import { PageShell } from "@/components/PageShell";
 import { GlassCard, ResultCard } from "@/components/finwise/Card";
 import { Input } from "@/components/finwise/Field";
 import { Button } from "@/components/finwise/Button";
-import { saveEmiCalculation } from "@/lib/sheets.functions";
+import { saveEmiCalculation } from "@/lib/local-store";
+
 
 export const Route = createFileRoute("/emi-calculator")({
   head: () => ({
@@ -26,7 +26,7 @@ function EmiCalculator() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [saving, setSaving] = useState(false);
-  const save = useServerFn(saveEmiCalculation);
+  
 
   const { emi, total, interest } = useMemo(() => {
     const r = rate / 12 / 100;
@@ -87,14 +87,12 @@ function EmiCalculator() {
               onClick={async () => {
                 setSaving(true);
                 try {
-                  await save({
-                    data: {
-                      payload: { loanAmount: amount, rate, months, emi, totalInterest: interest, totalPayable: total },
-                      user: { name, email },
-                      status: "calculated",
-                    },
-                  });
-                  toast.success("EMI saved", { description: `${fmt(emi)} / month logged to Sheets.` });
+                  saveEmiCalculation(
+                    { loanAmount: amount, rate, months, emi, totalInterest: interest, totalPayable: total },
+                    { name, email },
+                    "calculated",
+                  );
+                  toast.success("EMI saved", { description: `${fmt(emi)} / month saved on this device.` });
                 } catch (err) {
                   toast.error("Save failed", { description: (err as Error).message });
                 } finally {
@@ -102,7 +100,8 @@ function EmiCalculator() {
                 }
               }}
             >
-              Save to Google Sheets
+              Save calculation
+
             </Button>
           </div>
         </GlassCard>

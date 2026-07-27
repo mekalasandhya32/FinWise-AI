@@ -8,7 +8,7 @@ A professional AI-powered financial web application built with Flask.
 - Credit Score insights
 - EMI Calculator
 - AI Financial Advisor (Groq API)
-- Google Sheets integration for data persistence
+- Local persistence (browser localStorage in the web app)
 - Marketing pages: Home, About, Contact
 
 ## Tech Stack
@@ -16,7 +16,7 @@ A professional AI-powered financial web application built with Flask.
 - **Backend:** Python 3.10+, Flask 3
 - **Frontend:** HTML5, CSS3, Vanilla JavaScript
 - **AI:** Groq API
-- **Data:** Google Sheets API
+- **Data:** local storage (Sheets integration temporarily removed)
 
 ## Project Structure
 
@@ -32,10 +32,9 @@ backend/
 │   │   ├── credit.py          # Credit score
 │   │   ├── emi.py             # EMI calculator
 │   │   └── advisor.py         # AI advisor
-│   ├── services/              # External integrations (Groq, Sheets)
+│   ├── services/              # External integrations (Groq)
 │   │   ├── __init__.py
 │   │   ├── groq_service.py
-│   │   └── sheets_service.py
 │   ├── templates/
 │   │   ├── base.html
 │   │   ├── partials/

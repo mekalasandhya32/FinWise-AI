@@ -1,13 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { BadgeCheck, TrendingUp, ShieldCheck, Activity, Save } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { GlassCard, StatCard } from "@/components/finwise/Card";
 import { Input } from "@/components/finwise/Field";
 import { Button } from "@/components/finwise/Button";
-import { saveCreditAnalysis } from "@/lib/sheets.functions";
+import { saveCreditAnalysis } from "@/lib/local-store";
+
 
 export const Route = createFileRoute("/credit-score")({
   head: () => ({
@@ -28,26 +28,24 @@ function CreditScore() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [saving, setSaving] = useState(false);
-  const save = useServerFn(saveCreditAnalysis);
 
   const persist = async () => {
     setSaving(true);
     try {
-      await save({
-        data: {
-          payload: {
-            score,
-            paymentHistory: "98%",
-            utilization: "22%",
-            accountAge: "6.4 yrs",
-            recentInquiries: 2,
-            risk: "Low",
-          },
-          user: { name, email },
-          status: "analyzed",
+      saveCreditAnalysis(
+        {
+          score,
+          paymentHistory: "98%",
+          utilization: "22%",
+          accountAge: "6.4 yrs",
+          recentInquiries: 2,
+          risk: "Low",
         },
-      });
-      toast.success("Analysis saved to Google Sheets");
+        { name, email },
+        "analyzed",
+      );
+      toast.success("Analysis saved to this device");
+
     } catch (err) {
       toast.error("Save failed", { description: (err as Error).message });
     } finally {
@@ -118,7 +116,7 @@ function CreditScore() {
               <Input label="Your name" placeholder="Ada Lovelace" value={name} onChange={(e) => setName(e.target.value)} />
               <Input label="Email" type="email" placeholder="you@email.com" value={email} onChange={(e) => setEmail(e.target.value)} />
               <Button onClick={persist} loading={saving} leftIcon={<Save className="h-4 w-4" />}>
-                Save to Google Sheets
+                Save analysis
               </Button>
             </div>
           </GlassCard>

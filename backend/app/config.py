@@ -10,12 +10,6 @@ class BaseConfig:
     GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
     GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.1-70b-versatile")
 
-    # Google Sheets
-    GOOGLE_SHEETS_ID = os.getenv("GOOGLE_SHEETS_ID", "")
-    GOOGLE_SERVICE_ACCOUNT_FILE = os.getenv(
-        "GOOGLE_SERVICE_ACCOUNT_FILE", "service_account.json"
-    )
-
 
 class DevelopmentConfig(BaseConfig):
     DEBUG = True
