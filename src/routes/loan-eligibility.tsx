@@ -71,28 +71,27 @@ function LoanEligibility() {
       const evaluation = evaluateLoan(input);
       setResult(evaluation);
 
-      // Best-effort save; do not block UX on sheets failure
+      // Best-effort save; do not block UX on storage failure
       try {
-        await save({
-          data: {
-            payload: {
-              loanType: input.loanPurpose,
-              loanAmount: input.loanAmount,
-              monthlyIncome: input.income,
-              existingEmi: input.existingEmi,
-              employment: input.employmentType,
-              yearsEmployed: input.workExperience,
-            },
-            user: { name: input.name, email },
-            status: evaluation.eligible ? "eligible" : "not_eligible",
+        saveLoanApplication(
+          {
+            loanType: input.loanPurpose,
+            loanAmount: input.loanAmount,
+            monthlyIncome: input.income,
+            existingEmi: input.existingEmi,
+            employment: input.employmentType,
+            yearsEmployed: input.workExperience,
           },
-        });
+          { name: input.name, email },
+          evaluation.eligible ? "eligible" : "not_eligible",
+        );
         toast.success(evaluation.eligible ? "You look eligible!" : "Analysis complete", {
-          description: "Results saved to Google Sheets.",
+          description: "Results saved to this device.",
         });
       } catch (err) {
-        toast.message("Result ready", { description: "Sheets save skipped: " + (err as Error).message });
+        toast.message("Result ready", { description: "Save skipped: " + (err as Error).message });
       }
+
     } catch (err) {
       toast.error("Could not evaluate", { description: (err as Error).message });
     } finally {
