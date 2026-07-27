@@ -26,7 +26,7 @@ function EmiCalculator() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [saving, setSaving] = useState(false);
-  const save = useServerFn(saveEmiCalculation);
+  
 
   const { emi, total, interest } = useMemo(() => {
     const r = rate / 12 / 100;
