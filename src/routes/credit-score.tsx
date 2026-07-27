@@ -28,26 +28,24 @@ function CreditScore() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [saving, setSaving] = useState(false);
-  const save = useServerFn(saveCreditAnalysis);
 
   const persist = async () => {
     setSaving(true);
     try {
-      await save({
-        data: {
-          payload: {
-            score,
-            paymentHistory: "98%",
-            utilization: "22%",
-            accountAge: "6.4 yrs",
-            recentInquiries: 2,
-            risk: "Low",
-          },
-          user: { name, email },
-          status: "analyzed",
+      saveCreditAnalysis(
+        {
+          score,
+          paymentHistory: "98%",
+          utilization: "22%",
+          accountAge: "6.4 yrs",
+          recentInquiries: 2,
+          risk: "Low",
         },
-      });
-      toast.success("Analysis saved to Google Sheets");
+        { name, email },
+        "analyzed",
+      );
+      toast.success("Analysis saved to this device");
+
     } catch (err) {
       toast.error("Save failed", { description: (err as Error).message });
     } finally {
