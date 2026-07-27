@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import {
   Briefcase, DollarSign, Sparkles, User, Calendar, TrendingDown,
@@ -11,7 +10,8 @@ import { PageShell } from "@/components/PageShell";
 import { GlassCard } from "@/components/finwise/Card";
 import { Input, Select } from "@/components/finwise/Field";
 import { Button } from "@/components/finwise/Button";
-import { saveLoanApplication } from "@/lib/sheets.functions";
+import { saveLoanApplication } from "@/lib/local-store";
+
 import {
   evaluateLoan, validateLoanInput,
   type LoanInput, type LoanResult, type EmploymentType, type LoanPurpose,
