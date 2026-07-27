@@ -116,7 +116,7 @@ function CreditScore() {
               <Input label="Your name" placeholder="Ada Lovelace" value={name} onChange={(e) => setName(e.target.value)} />
               <Input label="Email" type="email" placeholder="you@email.com" value={email} onChange={(e) => setEmail(e.target.value)} />
               <Button onClick={persist} loading={saving} leftIcon={<Save className="h-4 w-4" />}>
-                Save to Google Sheets
+                Save analysis
               </Button>
             </div>
           </GlassCard>
