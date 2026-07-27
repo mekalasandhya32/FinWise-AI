@@ -1,13 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { BadgeCheck, TrendingUp, ShieldCheck, Activity, Save } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { GlassCard, StatCard } from "@/components/finwise/Card";
 import { Input } from "@/components/finwise/Field";
 import { Button } from "@/components/finwise/Button";
-import { saveCreditAnalysis } from "@/lib/sheets.functions";
+import { saveCreditAnalysis } from "@/lib/local-store";
+
 
 export const Route = createFileRoute("/credit-score")({
   head: () => ({
